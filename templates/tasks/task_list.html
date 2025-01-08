@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{ user.username }}'s Tasks
+{% endblock title %}
+
+{% block content %}
+<div class="mt-5">
+</div>
+<div class="container mt-5">
+    <h2 class="mb-4">Create a new task</h2>
+    <form method="post" class="form" action="{% url 'task-create' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary mt-3">Create Task</button>
+    </form>
+</div>
+<div class="container mt-5">
+    <h1 class="mb-4">Tasks</h1>
+    <ul class="list-unstyled">
+        {% for task in tasks %}
+        <li class="align-items-center" width="50%">
+            {% include "partials/task_detail.html" %}
+        </li>
+        {% empty %}
+        <li>No tasks found.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock content %}
+
