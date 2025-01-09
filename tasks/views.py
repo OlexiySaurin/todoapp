@@ -16,7 +16,8 @@ def get_paginated_tasks(request, tasks, tasks_per_page):
     return {
         'tasks': page_obj,
         'is_paginated': page_obj.has_other_pages(),
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        "task_count": paginator.count,
     }
 
 
