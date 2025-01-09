@@ -1,20 +1,34 @@
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
+from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from tasks.forms import TaskCreateForm, TaskUpdateForm
 from tasks.models import SimpleTask
 
+def get_paginated_tasks(request, tasks, tasks_per_page):
+    paginator = Paginator(tasks, tasks_per_page)  # Paginate tasks
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return {
+        'tasks': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+        'page_obj': page_obj
+    }
+
+
+
 def index(request):
-    return HttpResponse("Hello, world. You're at the tasks index.")
+    return HttpResponse("Hello, world. You're at the index.")
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
     model = SimpleTask
     template_name = 'tasks/task_list.html'
     context_object_name = 'tasks'
-    paginate_by = 10
+    paginate_by = 5
     form_class = TaskCreateForm
     
     def get_queryset(self):
@@ -23,31 +37,48 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = self.form_class()
+        context['current_page'] = self.request.GET.get('page')
+        context.update(get_paginated_tasks(self.request, self.get_queryset(), self.paginate_by))
         return context
+    
+    def render_to_response(self, context, **response_kwargs):
+        if self.request.headers.get('HX-Request'):  # HTMX request
+            return render(self.request, 'partials/task_list_partial.html', context)
+        return super().render_to_response(context, **response_kwargs)
 
+
+@login_required
+@require_http_methods(["PATCH"])
 def toggle_complete(request, pk):
-    task = SimpleTask.objects.get(pk=pk)
+    task = get_object_or_404(SimpleTask, pk=pk, user=request.user)
     task.completed = not task.completed
     task.save()
-    return HttpResponse("Task status updated.")
+    tasks = SimpleTask.objects.filter(user=request.user).order_by('completed', '-updated_at')
+    context = get_paginated_tasks(request, tasks, 5)
+    return render(request, 'partials/task_list_partial.html', 
+                  context)
 
 @login_required
 def task_update(request, pk):
-    task = SimpleTask.objects.get(pk=pk)
+    task = get_object_or_404(SimpleTask, pk=pk, user=request.user)
     form = TaskUpdateForm(request.POST or None, instance=task)
     if request.method == 'POST':
         task.user = request.user
         if form.is_valid():
             task = form.save()
-            return redirect('task-list')
-    return render(request, 'partials/task_detail_form.html', {"form": form, "task": task, 
-                                                       "task_update_url": reverse('task-update', args=[pk])})
-    
+            tasks = SimpleTask.objects.filter(user=request.user).order_by('completed', '-updated_at')
+            context = get_paginated_tasks(request, tasks, 5)
+            return render(request, 'partials/task_list_partial.html', context)
+    return render(request, 'partials/task_detail_form.html', {"form": form, "task": task})
+                                                       
 @login_required
+@require_http_methods(["DELETE"])
 def task_delete(request, pk):
-    task = SimpleTask.objects.get(pk=pk)
+    task = get_object_or_404(SimpleTask, pk=pk, user=request.user)
     task.delete()
-    return redirect('task-list')
+    tasks = SimpleTask.objects.filter(user=request.user).order_by('completed', '-updated_at')
+    context = get_paginated_tasks(request, tasks, 5)
+    return render(request, 'partials/task_list_partial.html', context)
     
 @login_required
 def task_create(request):
@@ -57,5 +88,6 @@ def task_create(request):
         task.user = request.user
         if form.is_valid():
             task.save()
-            return redirect('task-list')
-    return render(request, 'partials/task_detail_form.html', {"form": form, "task_create_url": reverse('task-create')})
+    tasks = SimpleTask.objects.filter(user=request.user).order_by('completed', '-updated_at')
+    context = get_paginated_tasks(request, tasks, 5)
+    return render(request, 'partials/task_list_partial.html', context)

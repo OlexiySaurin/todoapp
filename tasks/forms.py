@@ -6,16 +6,14 @@ class TaskUpdateForm(forms.ModelForm):
     due_date = forms.DateField(required=False, input_formats=['%Y-%m-%d'], widget=forms.TextInput(attrs={'placeholder': 'YYYY-MM-DD'}))
     class Meta:
         model = SimpleTask
-        fields = ['title', 'description', 'due_date']
+        fields = ['title', 'due_date']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
             'due_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
         
         labels = {
             'title': '',
-            'description': '',
             'due_date': '',
         }
         
@@ -31,10 +29,9 @@ class TaskCreateForm(forms.ModelForm):
     due_date = forms.DateField(required=False, input_formats=['%Y-%m-%d'], widget=forms.TextInput(attrs={'placeholder': 'YYYY-MM-DD'}))
     class Meta:
         model = SimpleTask
-        fields = ['title', 'description', 'due_date']
+        fields = ['title', 'due_date']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
             'due_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
         
