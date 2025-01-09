@@ -1,0 +1,37 @@
+{% if messages %}
+    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show position-relative" role="alert" id="message-{{ forloop.counter }}" style="opacity: 0.9;">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: 1rem; color: red; opacity: 0;">&times;</button>
+                <div class="countdown-circle" id="countdown-{{ forloop.counter }}"></div>
+            </div>
+
+            <script>
+                // Auto-close message after 5 seconds
+                setTimeout(function() {
+                    const messageElement = document.getElementById('message-{{ forloop.counter }}');
+                    if (messageElement) {
+                        // Apply fade-out effect
+                        messageElement.classList.add('fade-out');
+                        // After the fade-out transition, remove the element from the DOM
+                        setTimeout(function() {
+                            messageElement.remove();
+                        }, 1000); // Wait for the fade-out duration (1 second)
+                    }
+                }, 2000); // Close message after 5 seconds
+
+                // Circular countdown timer
+                const countdownElement = document.getElementById('countdown-{{ forloop.counter }}');
+                let countdown = 5;
+                const countdownInterval = setInterval(function() {
+                    countdown--;
+                    countdownElement.style.background = `conic-gradient(#007bff ${countdown * 72}deg, #e9ecef 0deg)`;
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                    }
+                }, 1000);
+            </script>
+        {% endfor %}
+    </div>
+{% endif %}

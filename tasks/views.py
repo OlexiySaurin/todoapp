@@ -6,7 +6,9 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from tasks.forms import TaskCreateForm, TaskUpdateForm
+from django.contrib import messages
+from django.contrib.auth.models import User
+from tasks.forms import TaskCreateForm, TaskUpdateForm, UserUpdateForm
 from tasks.models import SimpleTask
 
 def get_paginated_tasks(request, tasks, tasks_per_page):
@@ -78,6 +80,7 @@ def task_delete(request, pk):
     task = get_object_or_404(SimpleTask, pk=pk, user=request.user)
     task.delete()
     tasks = SimpleTask.objects.filter(user=request.user).order_by('completed', '-updated_at')
+    messages.success(request, 'Task deleted successfully')
     context = get_paginated_tasks(request, tasks, 5)
     return render(request, 'partials/task_list_partial.html', context)
     
@@ -89,6 +92,21 @@ def task_create(request):
         task.user = request.user
         if form.is_valid():
             task.save()
+            messages.success(request, 'Task created successfully')
     tasks = SimpleTask.objects.filter(user=request.user).order_by('completed', '-updated_at')
     context = get_paginated_tasks(request, tasks, 5)
     return render(request, 'partials/task_list_partial.html', context)
+
+def user_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    form = UserUpdateForm(request.POST or None, instance=user)
+    if request.method == 'POST':
+        if form.is_valid():
+            # Update user
+            user.username = form.cleaned_data['username']
+            user.email = form.cleaned_data['email']
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.save()
+    messages.success(request, 'Profile updated successfully')
+    return render(request, 'partials/profile.html', {'profile_user': user, 'form': form})

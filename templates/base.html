@@ -33,15 +33,19 @@
     
         <!-- Custom CSS -->
         <link rel="stylesheet" href="{% static 'css/google.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 
         <!-- HTMX -->
         <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 
-        {% comment %} <!-- Alpine JS -->
-        <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script> {% endcomment %}
+<!-- Alpine JS -->
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
     </head>
 
     <body>
+        {% block messages %}
+            {% include "partials/messages.html" %}
+        {% endblock %}
         <header style="margin-bottom: 50px;">
             {% include "partials/header.html" %}
         </header>

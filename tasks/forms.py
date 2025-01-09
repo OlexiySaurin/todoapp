@@ -1,5 +1,6 @@
 from django import forms
 from django.utils import timezone
+from django.contrib.auth.models import User
 from .models import SimpleTask
 
 class TaskUpdateForm(forms.ModelForm):
@@ -43,3 +44,17 @@ class TaskCreateForm(forms.ModelForm):
             raise forms.ValidationError("Due date cannot be in the past.")
         return due_date
     
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+        
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("Email is already in use.")
+        return email
