@@ -106,7 +106,7 @@ WSGI_APPLICATION = 'todoapp.wsgi.application'
 
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = False
-CSRF_TRUSTED_ORIGINS = ['https://todoapp-xucr.onrender.com/', 'http://127.0.0.1:8000']
+CSRF_TRUSTED_ORIGINS = os.environ.get("ALLOWED_HOSTS").split(" ")
 
 
 # Database
