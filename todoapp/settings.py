@@ -1,7 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
 import logging
-
+import dj_database_url
 from django.urls import reverse
 
 
@@ -112,14 +112,9 @@ CSRF_TRUSTED_ORIGINS = ['https://todoapp-xucr.onrender.com/', 'http://127.0.0.1:
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'todoapp_db',
-        'USER': 'postgres',
-        'PASSWORD': '12345',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.parse(
+        "postgresql://oleksii:K4KNwyVGFAV1kZw7bL5aKEla5YDQrfs5@dpg-cu06o15umphs73fv2fr0-a.frankfurt-postgres.render.com/todoappdb_v59r"
+    )
 }
 
 
