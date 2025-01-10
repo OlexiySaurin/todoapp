@@ -18,7 +18,7 @@ SECRET_KEY = 'django-insecure-7_!kd76ibmj&n(a4z+d99h33n*pwqi&6s9mqa84*9xi_)pq(cv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "192.168.0.176", "6358-85-193-33-209.ngrok-free.app"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", 'https://todoapp-xucr.onrender.com/']
 
 
 # Application definition
