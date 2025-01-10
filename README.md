@@ -1,7 +1,7 @@
 # To-Do App
 
 A simple yet powerful To-Do application built with Django and enhanced with HTMX for dynamic interactions. This project includes social authentication via Google and GitHub, a RESTful API, and other essential features to provide a robust task management experience.
-
+### Deployed on Render: https://todoapp-1-y78e.onrender.com
 # Features
 ## Core Features:
 
