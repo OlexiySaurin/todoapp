@@ -3,6 +3,7 @@ from pathlib import Path
 import logging
 import dj_database_url
 from django.urls import reverse
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -16,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-7_!kd76ibmj&n(a4z+d99h33n*pwqi&6s9mqa84*9xi_)pq(cv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", 'https://todoapp-xucr.onrender.com/']
 
