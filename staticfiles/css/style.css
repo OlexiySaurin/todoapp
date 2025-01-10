@@ -1,0 +1,54 @@
+/* Add this to your static CSS file or within <style> tags */
+.alert-container {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050; /* Ensure it's above other elements */
+    max-width: 80%; /* Optional: controls the width of the message */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.alert {
+    width: auto;
+    max-width: 350px; /* Control the maximum width */
+    margin-bottom: 10px; /* Space between messages */
+    font-size: 0.8rem; /* Smaller font size */
+    opacity: 0.8; /* Slight transparency */
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.alert.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px); /* Optional: slide out effect */
+}
+
+.alert .btn-close {
+    background: transparent;
+    border: none;
+    color: #000;
+}
+
+/* Optional: Make sure the messages are easy to read with a bit of padding */
+.alert-success {
+    background-color: rgba(76, 175, 80, 0.8);
+    color: white;
+}
+
+.alert-info {
+    background-color: rgba(33, 150, 243, 0.8);
+    color: white;
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.8);
+    color: white;
+}
+
+.alert-danger {
+    background-color: rgba(244, 67, 54, 0.8);
+    color: white;
+}
