@@ -14,12 +14,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7_!kd76ibmj&n(a4z+d99h33n*pwqi&6s9mqa84*9xi_)pq(cv'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", 'https://todoapp-xucr.onrender.com/']
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -111,10 +111,11 @@ CSRF_TRUSTED_ORIGINS = ['https://todoapp-xucr.onrender.com/', 'http://127.0.0.1:
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+database_url = os.environ.get("DATABASE_URL")
 
 DATABASES = {
     'default': dj_database_url.parse(
-        "postgresql://oleksii:K4KNwyVGFAV1kZw7bL5aKEla5YDQrfs5@dpg-cu06o15umphs73fv2fr0-a.frankfurt-postgres.render.com/todoappdb_v59r"
+        database_url
     )
 }
 
